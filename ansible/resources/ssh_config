@@ -1,0 +1,8 @@
+Host gitlab.com-sfeir
+	HostName gitlab.com
+	User git
+	IdentityFile ~/.ssh/id_rsa_sfeir
+Host github.com-perso
+	HostName github.com
+	User git
+	IdentityFile ~/.ssh/id_rsa_sfeir
