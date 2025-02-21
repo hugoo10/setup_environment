@@ -41,13 +41,6 @@
       become: yes
       shell: "./playbook_scripts/get_latest_keepass_plugin.sh"
 
-#####################  INSTALLATION OBSIDIAN  #####################
-    - name: Install Obsidian
-      become: yes
-      community.general.flatpak:
-        name: md.obsidian.Obsidian
-        state: present
-
 #####################  INSTALLATION GPARTED  #####################
     - name: Install Gparted
       become: yes
