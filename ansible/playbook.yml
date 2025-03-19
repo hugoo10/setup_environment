@@ -8,12 +8,91 @@
     tasks:
     
 
-#####################  INSTALLATION CURL  #####################
-    - name: Install Curl
+#################################################
+#####################  DEV  #####################
+#################################################
+
+#####################  COPIE SCRIPTS  #####################
+    - name: Copy upgrade script
+      copy:
+        src: "./resources/upgrade"
+        dest: "/usr/local/bin/upgrade"
+        mode: "555"
+
+#####################  INSTALLATION VSCODE  #####################
+    - name: Install Visual Studio Code
+      community.general.flatpak:
+        name: com.visualstudio.code
+        state: present
+
+#####################  INSTALLATION GIT  #####################
+    - name: Install Git
       become: yes
       apt:
-        name: curl
-        
+        name: git-all
+    - name: Default editor
+      git_config:
+        name: core.editor
+        scope: global
+        value: code
+    - name: Pull rebase
+      git_config:
+        name: pull.rebase
+        scope: global
+        value: true
+
+#####################  INSTALLATION INTELLIJ  #####################
+    - name: Install IntelliJ
+      become: yes
+      community.general.flatpak:
+        name: com.jetbrains.IntelliJ-IDEA-Ultimate
+        state: present
+
+#####################  INSTALLATION REMMINA  #####################
+    - name: Install Remmina
+      become: yes
+      community.general.flatpak:
+        name: org.remmina.Remmina
+        state: present
+
+#####################  INSTALLATION POSTMAN  #####################
+    - name: Install Bruno
+      become: yes
+      community.general.flatpak:
+        name: com.usebruno.Bruno
+        state: present
+
+#####################  INSTALLATION SSH  #####################
+    - name: Generate ssh PERSO
+      community.crypto.openssh_keypair:
+        path: ~/.ssh/id_rsa_perso
+        comment: "{{ssh_email}}"
+        type: rsa
+        size: 4096
+    - name: Copy files from several directories
+      copy:
+        src: "./resources/ssh_config"
+        dest: "~/.ssh/config"
+
+#####################  INSTALLATION SDKMAN  #####################
+    - name: Install SDKMAN
+      shell: "./playbook_scripts/install_sdkman.sh"
+
+#####################  INSTALLATION NVM  #####################
+    - name: Install NVM
+      shell: "./playbook_scripts/install_nvm.sh"
+
+#####################  INSTALLATION PODMAN  #####################
+    - name: Install Podman
+      become: yes
+      apt:
+        name: podman
+
+
+#################################################
+#####################  PERSO  #####################
+#################################################
+
 #####################  INSTALLATION SIGNAL  #####################
     - name: Install Signal
       become: yes
@@ -21,12 +100,11 @@
         name: org.signal.Signal
         state: present
       
-      
-#####################  INSTALLATION VSCODE  #####################
-    - name: Install Visual Studio Code
-      community.general.flatpak:
-        name: com.visualstudio.code
-        state: present
+#####################  INSTALLATION GPARTED  #####################
+    - name: Install Gparted
+      become: yes
+      apt:
+        name: gparted
 
 #####################  INSTALLATION KEEPASS  #####################
     - name: Check if 'keepass2' is installed
@@ -40,12 +118,6 @@
     - name: Download latest Keepass plugins
       become: yes
       shell: "./playbook_scripts/get_latest_keepass_plugin.sh"
-
-#####################  INSTALLATION GPARTED  #####################
-    - name: Install Gparted
-      become: yes
-      apt:
-        name: gparted
 
 #####################  INSTALLATION LIBRE OFFICE  #####################
     - name: Install Libre Office
@@ -73,86 +145,3 @@
       community.general.flatpak:
         name: com.nextcloud.desktopclient.nextcloud
         state: present
-        
-#####################  COPIE SCRIPTS  #####################
-    - name: Copy upgrade script
-      copy:
-        src: "./resources/upgrade"
-        dest: "~/.local/bin/upgrade"
-        mode: "555"
-        
-#####################  INSTALLATION GIT  #####################
-    - name: Install Git
-      become: yes
-      apt:
-        name: git-all
-    - name: Default editor
-      git_config:
-        name: core.editor
-        scope: global
-        value: code
-    - name: Pull rebase
-      git_config:
-        name: pull.rebase
-        scope: global
-        value: true
-#####################  INSTALLATION SSH  #####################
-    - name: Generate ssh PERSO
-      community.crypto.openssh_keypair:
-        path: ~/.ssh/id_rsa_perso
-        comment: "{{ssh_email}}"
-        type: rsa
-        size: 4096
-    - name: Copy files from several directories
-      copy:
-        src: "./resources/ssh_config"
-        dest: "~/.ssh/config"
-
-#####################  INSTALLATION SDKMAN  #####################
-    - name: Check if SDKMAN is installed
-      command: sdk version
-      register: sdkman_valid
-      ignore_errors: yes
-    - name: Install SDKMAN
-      shell: "./playbook_scripts/install_sdkman.sh"
-      when: sdkman_valid.failed
-#####################  INSTALLATION NVM  #####################
-    - name: Check if NVM is installed
-      command: nvm --version
-      register: nvm_valid
-      ignore_errors: yes
-    - name: Install NVM
-      shell: "./playbook_scripts/install_nvm.sh"
-      when: nvm_valid
-#####################  INSTALLATION DOCKER  #####################
-    - name: Check if 'docker' is installed
-      command: docker --version
-      register: docker_valid
-      ignore_errors: yes
-    - name: Install Docker
-      become: yes
-      shell: "./playbook_scripts/install_docker.sh"
-      when: docker_valid.failed
-
-#####################  INSTALLATION INTELLIJ  #####################
-    - name: Install IntelliJ
-      become: yes
-      community.general.flatpak:
-        name: com.jetbrains.IntelliJ-IDEA-Ultimate
-        state: present
-
-
-#####################  INSTALLATION REMMINA  #####################
-    - name: Install Remmina
-      become: yes
-      community.general.flatpak:
-        name: org.remmina.Remmina
-        state: present
-
-#####################  INSTALLATION POSTMAN  #####################
-    - name: Install Bruno
-      become: yes
-      community.general.flatpak:
-        name: com.usebruno.Bruno
-        state: present
-        
