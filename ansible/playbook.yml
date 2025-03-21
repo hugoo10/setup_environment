@@ -14,6 +14,7 @@
 
 #####################  COPIE SCRIPTS  #####################
     - name: Copy upgrade script
+      become: yes
       copy:
         src: "./resources/upgrade"
         dest: "/usr/local/bin/upgrade"
