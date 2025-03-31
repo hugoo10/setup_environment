@@ -6,7 +6,7 @@
       prompt: What is your SSH email?
       private: false
     tasks:
-    
+
 
 #################################################
 #####################  DEV  #####################
@@ -45,8 +45,9 @@
 #####################  INSTALLATION INTELLIJ  #####################
     - name: Install IntelliJ
       become: yes
-      community.general.flatpak:
-        name: com.jetbrains.IntelliJ-IDEA-Ultimate
+      snap:
+        name: intellij-idea-ultimate
+        classic: yes
         state: present
 
 #####################  INSTALLATION REMMINA  #####################
